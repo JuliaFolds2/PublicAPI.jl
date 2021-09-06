@@ -1,0 +1,10 @@
+name = "StrictNegative"
+uuid = "9fb20513-a6ae-48a4-b0de-04280096f1f5"
+authors = ["Takafumi Arakaki <aka.tkf@gmail.com> and contributors"]
+version = "0.1.0-DEV"
+
+[deps]
+PublicAPI = "e27abb06-81da-40e5-a77a-80f0fe2578fc"
+
+[compat]
+julia = "1"

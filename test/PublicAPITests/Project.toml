@@ -1,0 +1,12 @@
+name = "PublicAPITests"
+uuid = "be93e20e-eead-488e-ab02-f18355292fc7"
+authors = ["Takafumi Arakaki <aka.tkf@gmail.com> and contributors"]
+version = "0.1.0-DEV"
+
+[deps]
+Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
+PublicAPI = "e27abb06-81da-40e5-a77a-80f0fe2578fc"
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[compat]
+julia = "1"

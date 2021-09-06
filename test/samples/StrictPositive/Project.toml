@@ -1,0 +1,10 @@
+name = "StrictPositive"
+uuid = "b799c4c9-85ca-4197-a5c7-f5b56df68181"
+authors = ["Takafumi Arakaki <aka.tkf@gmail.com> and contributors"]
+version = "0.1.0-DEV"
+
+[deps]
+PublicAPI = "e27abb06-81da-40e5-a77a-80f0fe2578fc"
+
+[compat]
+julia = "1"

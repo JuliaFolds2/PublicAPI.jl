@@ -1,0 +1,10 @@
+name = "UndefinedPositive"
+uuid = "ae00e74d-c9d1-4c5b-96ae-a89e2373d18f"
+authors = ["Takafumi Arakaki <aka.tkf@gmail.com> and contributors"]
+version = "0.1.0-DEV"
+
+[deps]
+PublicAPI = "e27abb06-81da-40e5-a77a-80f0fe2578fc"
+
+[compat]
+julia = "1"
