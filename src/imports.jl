@@ -17,7 +17,20 @@ macro strict(import_statement::Expr)
 
     @gensym source_module
     M = import_statement.args[1].args[1]
-    import_source_module = Expr(:import, Expr(:as, M, source_module))
+    if VERSION ≥ v"1.6"
+        import_source_module = Expr(:import, Expr(:as, M, source_module))
+    else
+        @gensym scratch
+        import_source_module = quote
+            module $scratch
+            $(Expr(:import, M))
+            const $source_module = $(M.args[end])
+            end
+            using .$scratch: $source_module
+        end
+        @assert import_source_module.head === :block
+        import_source_module = Expr(:toplevel, import_source_module.args...)
+    end
 
     imported_names = map(import_statement.args[1].args[2:end]) do ex
         @assert Meta.isexpr(ex, :., 1)   # what else?

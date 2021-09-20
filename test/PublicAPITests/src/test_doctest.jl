@@ -4,6 +4,9 @@ import PublicAPI
 using Documenter: doctest
 using Test
 
-test() = doctest(PublicAPI; manual = false)
+function test()
+    VERSION ≥ v"1.6" || return
+    doctest(PublicAPI; manual = false)
+end
 
 end  # module

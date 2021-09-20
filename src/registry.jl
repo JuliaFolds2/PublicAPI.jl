@@ -12,9 +12,19 @@ const API_REGISTRY_NAME = gensym(:API_REGISTRY_NAME)
 Declare public API names.
 """
 macro public(name::Symbol, othernames::Symbol...)
-    allnames = [name]
-    append!(allnames, othernames)
+    return public_impl(__module__, [name, othernames...])
+end
 
+macro public(macrocall::Expr)
+    if macrocall.head !== :macrocall 
+        error("Unsupported syntax: $macrocall")
+    elseif length(macrocall.args) != 2
+        error("Expected single macro name as in `@public @macro`; got: $macrocall")
+    end
+    return public_impl(__module__, Symbol[macrocall.args[1]])
+end
+
+function public_impl(__module__::Module, allnames::Vector{Symbol})
     @gensym namespace
     expr = quote
         # Allocate the "registry" (just a `Vector{Symbol}`) if it hasn't been
