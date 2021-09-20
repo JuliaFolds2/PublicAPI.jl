@@ -3,9 +3,6 @@ uuid = "e27abb06-81da-40e5-a77a-80f0fe2578fc"
 authors = ["Takafumi Arakaki <aka.tkf@gmail.com> and contributors"]
 version = "0.1.0-DEV"
 
-[deps]
-StaticStorages = "ee8d4ff6-3960-4079-a45c-572c714b7398"
-
 [compat]
 julia = "1"
 
