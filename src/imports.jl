@@ -23,7 +23,7 @@ macro strict(import_statement::Expr)
     @gensym source_module
     if is_explicit_using(import_statement)  # using M: a.b.c
         import_expr = import_statement
-        M = import_statement.args[1].args[1]
+        qualified_module_path = import_statement.args[1].args[1]  # `M` in `using M: ...`
 
         imported_names = map(import_statement.args[1].args[2:end]) do ex
             @assert Meta.isexpr(ex, :., 1)   # what else?
@@ -52,20 +52,21 @@ macro strict(import_statement::Expr)
         end
         @assert import_expr.head === :block
         import_expr = Expr(:toplevel, import_expr.args...)
-        M = import_statement.args[1]
+        qualified_module_path = import_statement.args[1]  # `M` in `using M``
         imported_names = Symbol[]  # no need to check
     else
         error("Unsupported syntax: ", import_statement)
     end
 
     if VERSION ≥ v"1.6"
-        import_source_module = Expr(:import, Expr(:as, M, source_module))
+        import_source_module =
+            Expr(:import, Expr(:as, qualified_module_path, source_module))
     else
         @gensym scratch
         import_source_module = quote
             module $scratch
-            $(Expr(:import, M))
-            const $source_module = $(M.args[end])
+            $(Expr(:import, qualified_module_path))
+            const $source_module = $(qualified_module_path.args[end])
             end
             using .$scratch: $source_module
         end
