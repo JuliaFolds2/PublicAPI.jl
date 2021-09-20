@@ -13,8 +13,10 @@ jobs:
     strategy:
       matrix:
         julia-version:
+          - '1.0'
           - '~1.7.0-beta4'
           - '1.6'
+          # - '1'
           - 'nightly'
       fail-fast: false
     name: Test Julia ${{ matrix.julia-version }}
