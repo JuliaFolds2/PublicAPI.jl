@@ -12,8 +12,6 @@ module Internal
 using ..PublicAPI: PublicAPI
 import ..PublicAPI: @public, @strict
 
-import StaticStorages
-
 include("registry.jl")
 include("query.jl")
 include("imports.jl")

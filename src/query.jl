@@ -31,7 +31,6 @@ The `provider` module itself is not included in the `apis`.
 - `recursive::Bool = true`: Include public APIs from public sub-modules.
 """
 function PublicAPI.of(provider::Module; exported::Bool = true, recursive::Bool = true)
-    dict = api_by_module()
     apis = Vector{API}()
     function sweep(m::Module)
         function mayberecurse(n::Symbol)
@@ -46,16 +45,23 @@ function PublicAPI.of(provider::Module; exported::Bool = true, recursive::Bool =
                 end
             end
         end
-        ns = get(dict, m, nothing)
-        if ns !== nothing
-            for n in ns
-                push!(apis, API(m, n))
-                mayberecurse(n)
+        registry = nothing
+        if isdefined(m, API_REGISTRY_NAME)
+            registry = getfield(m, API_REGISTRY_NAME)
+            if registry isa Vector{Symbol}
+                for n in registry
+                    push!(apis, API(m, n))
+                    mayberecurse(n)
+                end
+            else
+                @error "Malformed API registry found in module `$m`" registry
             end
         end
         if exported
             for n in names(m)
-                n in ns && continue
+                if registry !== nothing
+                    n in registry && continue
+                end
                 n === nameof(m) && continue  # avoid the module to be listed twice
                 if isdefined(m, n)
                     push!(apis, API(m, n))
@@ -69,13 +75,4 @@ function PublicAPI.of(provider::Module; exported::Bool = true, recursive::Bool =
     end
     sweep(provider)
     return apis
-end
-
-# TODO: Optimize. This is very inefficient.
-function api_by_module()
-    dict = Dict{Module,Vector{Symbol}}()
-    for (m, n) in values(StaticStorages.getbucket(API_BUCKET))
-        push!(get!(() -> Symbol[], dict, m), n)
-    end
-    return dict
 end
