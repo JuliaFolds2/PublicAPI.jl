@@ -16,7 +16,10 @@ include("registry.jl")
 include("query.jl")
 include("imports.jl")
 
-let path = joinpath(@__DIR__, "..", "README.md")
+# Import README as a docstring for testing it via doctest.
+# Not calling `@eval` here to avoid "eval from module PublicAPI to Internal".
+function define_docstring()
+    path = joinpath(@__DIR__, "..", "README.md")
     include_dependency(path)
     doc = read(path, String)
     doc = replace(doc, r"^```julia"m => "```jldoctest README")
@@ -24,6 +27,8 @@ let path = joinpath(@__DIR__, "..", "README.md")
 end
 
 end  # module Internal
+
+Internal.define_docstring()
 
 @public var"@public"
 @public var"@strict"
