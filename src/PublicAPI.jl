@@ -30,8 +30,8 @@ end  # module Internal
 
 Internal.define_docstring()
 
-@public var"@public"
-@public var"@strict"
+@public @public
+@public @strict
 @public of
 
 end  # baremodule PublicAPI
