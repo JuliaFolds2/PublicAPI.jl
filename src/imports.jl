@@ -1,23 +1,20 @@
 # TODO: Support `import` for APIs marked as overloadbale
 """
     PublicAPI.@strict using Module: name₁, name₂, …, nameₙ
-    PublicAPI.@strict using Module
     PublicAPI.@strict import Module
 
 Enable strict import; i.e., fail on using non-public API.
 
-The simple forms `using Module` and `import Module` create a dummy object named
-`Module` that acts like the original `Module` but forbids access to the internal
-names.
+The simple form `import Module` create a dummy object named `Module` that acts
+like the original `Module` but forbids access to the internal names.
 
 # Extended help
 
-Limitation: Currently, `PublicAPI.@strict` with the simple forms `using Module`
-and `import Module` creates a dummy local module and a global constant named
-`Module` is bind to it.  Thus, unlike `using Module`, the expression
-`PublicAPI.@strict using Module` cannot be evaluated more than once inside a
-module.  This is an implementation detail that may be fixed in the future if we
-find a better implementation.
+Limitation: Currently, `PublicAPI.@strict` with the simple form `import Module`
+creates a dummy local module and a global constant named `Module` is bind to it.
+Thus, unlike `import Module`, the expression `PublicAPI.@strict import Module`
+cannot be evaluated more than once inside a module.  This is an implementation
+detail that may be fixed in the future if we find a better implementation.
 """
 macro strict(import_statement::Expr)
     @gensym source_module
@@ -29,7 +26,7 @@ macro strict(import_statement::Expr)
             @assert Meta.isexpr(ex, :., 1)   # what else?
             ex.args[1]::Symbol
         end
-    elseif is_simple_using(import_statement) || is_simple_import(import_statement)
+    elseif is_simple_import(import_statement)
         fullpath = import_statement.args[1].args
         shim = gensym("PublicAPI_wrapper_" * join(fullpath, "."))
         lastname = fullpath[end]::Symbol
@@ -46,9 +43,6 @@ macro strict(import_statement::Expr)
             end
             end
             const $lastname = $shim
-            if $(is_simple_using(import_statement))
-                using .$shim
-            end
         end
         @assert import_expr.head === :block
         import_expr = Expr(:toplevel, import_expr.args...)
@@ -83,22 +77,15 @@ macro strict(import_statement::Expr)
 end
 
 """
-    is_simple_using(ex::Expr) :: Bool
-
-Check if `ex` is of the form `using Module`.
-"""
-is_simple_using(ex::Expr, head = :using) =
-    ex.head === head &&
-    length(ex.args) == 1 &&
-    Meta.isexpr(ex.args[1], :., 1) &&
-    all(x -> x isa Symbol, ex.args[1].args)
-
-"""
     is_simple_import(ex::Expr) :: Bool
 
 Check if `ex` is of the form `import Module`.
 """
-is_simple_import(ex::Expr) = is_simple_using(ex, :import)
+is_simple_import(ex::Expr) =
+    ex.head === :import &&
+    length(ex.args) == 1 &&
+    Meta.isexpr(ex.args[1], :., 1) &&
+    all(x -> x isa Symbol, ex.args[1].args)
 
 """
     is_explicit_using(ex::Expr) :: Bool
