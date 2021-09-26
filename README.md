@@ -1,6 +1,6 @@
 # PublicAPI
 
-[![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://julialang.github.io/PublicAPI.jl/dev/)
+[![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://juliaexperiments.github.io/PublicAPI.jl/dev/)
 
 **NOTE**: This is a proof-of-concept implementation of
 [Feature request: `Base.@public` macro for declaring a public name without needing to `export` it · Issue #42117 · JuliaLang/julia](https://github.com/JuliaLang/julia/issues/42117).

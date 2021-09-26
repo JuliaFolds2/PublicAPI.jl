@@ -12,7 +12,7 @@ makedocs(
 )
 
 deploydocs(
-    repo = "github.com/JuliaLang/PublicAPI.jl",
+    repo = "github.com/JuliaExperiments/PublicAPI.jl",
     devbranch = "main",  # https://github.com/JuliaDocs/Documenter.jl/issues/1443
     push_preview = true,
     # See: https://juliadocs.github.io/Documenter.jl/stable/lib/public/#Documenter.deploydocs
