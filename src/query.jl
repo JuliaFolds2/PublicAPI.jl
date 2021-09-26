@@ -8,7 +8,7 @@ Base.Module(api::API) = api.mod
 Base.nameof(api::API) = api.var
 
 """
-    PublicAPI.of(provider::Module; [exported], [recursive]) -> apis::Vector
+    PublicAPI.of(provider::Module; [recursive = true]) -> apis::Vector
 
 List public API from the `provider` module.
 
@@ -23,10 +23,9 @@ Each element `api` of `apis` supports the following accessor functions:
 The `provider` module itself is not included in the `apis`.
 
 # Keyword Arguments
-- `exported::Bool = true`: Include names marked by `export`.
 - `recursive::Bool = true`: Include public APIs from public sub-modules.
 """
-function PublicAPI.of(provider::Module; exported::Bool = true, recursive::Bool = true)
+function PublicAPI.of(provider::Module; recursive::Bool = true)
     apis = Vector{API}()
     function sweep(m::Module)
         function mayberecurse(n::Symbol)
@@ -53,19 +52,17 @@ function PublicAPI.of(provider::Module; exported::Bool = true, recursive::Bool =
                 @error "Malformed API registry found in module `$m`" registry
             end
         end
-        if exported
-            for n in names(m)
-                if registry !== nothing
-                    n in registry && continue
-                end
-                n === nameof(m) && continue  # avoid the module to be listed twice
-                if isdefined(m, n)
-                    push!(apis, API(m, n))
-                    mayberecurse(n)
-                else
-                    # Should error?
-                    @error "Exported but undefined: `$m.$n`"
-                end
+        for n in names(m)
+            if registry !== nothing
+                n in registry && continue
+            end
+            n === nameof(m) && continue  # avoid the module to be listed twice
+            if isdefined(m, n)
+                push!(apis, API(m, n))
+                mayberecurse(n)
+            else
+                # Should error?
+                @error "Exported but undefined: `$m.$n`"
             end
         end
     end
