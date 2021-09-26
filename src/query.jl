@@ -16,13 +16,9 @@ Each element `api` of `apis` supports the following accessor functions:
 
 * `Module(api) :: Module`: module in which the API is defined
 * `nameof(api) :: Symbol`: the name of the API in the module
-* `fullname(api) :: Tuple{Vararg{Symbol}}`: full access pass of the API
-
-In particular,
-
-    fullname(api) === (fullname(Module(api))..., nameof(api))
-
-holds for every `api`.
+* `fullname(api) :: Tuple{Vararg{Symbol}}`: the components of the
+  fully-qualified name; i.e., `(:Package, :SubModule, :function)` for
+  `Package.SubModule.function`.
 
 The `provider` module itself is not included in the `apis`.
 
