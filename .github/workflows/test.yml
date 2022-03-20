@@ -19,9 +19,10 @@ jobs:
           - '1.3'
           - '1.4'
           - '1.5'
-          - '~1.7.0-beta4'
           - '1.6'
-          # - '1'
+          # - '1.7'
+          - '~1.8.0-0' # 1.8 betas and release candidates
+          - '1'
           - 'nightly'
       fail-fast: false
     name: Test Julia ${{ matrix.julia-version }}
