@@ -5,4 +5,5 @@ PublicAPI
 PublicAPI.@public
 PublicAPI.@strict
 PublicAPI.of
+PublicAPI.API
 ```

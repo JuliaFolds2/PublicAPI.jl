@@ -1,24 +1,28 @@
-struct API
-    mod::Module
-    var::Symbol
-end
-
-Base.fullname(api::API) = (fullname(api.mod)..., api.var)
-Base.Module(api::API) = api.mod
-Base.nameof(api::API) = api.var
-
 """
-    PublicAPI.of(provider::Module; [recursive = true]) -> apis::Vector
+    PublicAPI.API
 
-List public API from the `provider` module.
+A value representing an API.
 
-Each element `api` of `apis` supports the following accessor functions:
+An `api::API` supports the following accessor functions:
 
 * `Module(api) :: Module`: module in which the API is defined
 * `nameof(api) :: Symbol`: the name of the API in the module
 * `fullname(api) :: Tuple{Vararg{Symbol}}`: the components of the
   fully-qualified name; i.e., `(:Package, :SubModule, :function)` for
   `Package.SubModule.function`.
+"""
+PublicAPI.API
+
+Base.fullname(api::API) = (fullname(api.mod)..., api.var)
+Base.Module(api::API) = api.mod
+Base.nameof(api::API) = api.var
+
+"""
+    PublicAPI.of(provider::Module; [recursive = true]) -> apis::Vector{PublicAPI.API}
+
+List public API from the `provider` module.
+
+See [`PublicAPI.API`](@ref) for methods supported by each element of `apis`.
 
 The `provider` module itself is not included in the `apis`.
 
@@ -45,7 +49,7 @@ function PublicAPI.of(provider::Module; recursive::Bool = true)
             registry = getfield(m, API_REGISTRY_NAME)
             if registry isa Vector{Symbol}
                 for n in registry
-                    push!(apis, API(m, n))
+                    push!(apis, _API(m, n))
                     mayberecurse(n)
                 end
             else
@@ -58,7 +62,7 @@ function PublicAPI.of(provider::Module; recursive::Bool = true)
             end
             n === nameof(m) && continue  # avoid the module to be listed twice
             if isdefined(m, n)
-                push!(apis, API(m, n))
+                push!(apis, _API(m, n))
                 mayberecurse(n)
             else
                 # Should error?
