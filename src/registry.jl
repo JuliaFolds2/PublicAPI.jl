@@ -58,7 +58,7 @@ macro public(name::Symbol, othernames::Symbol...)
 end
 
 macro public(macrocall::Expr)
-    if macrocall.head !== :macrocall 
+    if macrocall.head !== :macrocall
         error("Unsupported syntax: $macrocall")
     elseif length(macrocall.args) != 2
         error("Expected single macro name as in `@public @macro`; got: $macrocall")
