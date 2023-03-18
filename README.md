@@ -1,4 +1,4 @@
-# PublicAPI
+# PublicAPI - this package is still experimental!
 
 [![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://juliaexperiments.github.io/PublicAPI.jl/dev/)
 
