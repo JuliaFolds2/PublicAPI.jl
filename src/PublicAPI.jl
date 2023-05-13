@@ -2,14 +2,26 @@ baremodule PublicAPI
 
 export @public
 
+module InternalPrelude
+function _API end
+end
+
 macro public end
 macro strict end
 
 function of end
 
+struct API
+    mod::Module
+    var::Symbol
+
+    InternalPrelude._API(mod::Module, var::Symbol) = new(mod, var)
+end
+
 module Internal
 
-using ..PublicAPI: PublicAPI
+using ..PublicAPI.InternalPrelude: _API
+using ..PublicAPI: PublicAPI, API
 import ..PublicAPI: @public, @strict
 
 include("registry.jl")
@@ -33,5 +45,6 @@ Internal.define_docstring()
 @public @public
 @public @strict
 @public of
+@public API
 
 end  # baremodule PublicAPI

@@ -26,9 +26,10 @@ julia> using PublicAPI
 julia> apis = PublicAPI.of(PublicAPI);
 
 julia> sort!(fullname.(apis))
-3-element Vector{Tuple{Symbol, Symbol}}:
+4-element Vector{Tuple{Symbol, Symbol}}:
  (:PublicAPI, Symbol("@public"))
  (:PublicAPI, Symbol("@strict"))
+ (:PublicAPI, :API)
  (:PublicAPI, :of)
 ```
 
